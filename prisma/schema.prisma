@@ -172,7 +172,8 @@ model Product_Details {
     product_size            Product_Size @relation(fields: [product_size_id], references: [product_size_id])
     product_size_id         Int
 
-    cart                    Cart[]
+    cart                    Cart? @relation(fields: [cart_id], references: [cart_id])
+    cart_id                 Int?
 }
 
 model Product_Color {

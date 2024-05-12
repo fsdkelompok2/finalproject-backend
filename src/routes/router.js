@@ -20,6 +20,6 @@ router.get("/users", verifySession, users);
 
 
 router.get("/cart/:id", cartInfo);
-router.put("/cart/:id", cartUpdate)
+router.put("/cart/:id", cartUpdate);
 
 module.exports = router;

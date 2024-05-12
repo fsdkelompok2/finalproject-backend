@@ -8,8 +8,12 @@ const {
 } = require("../controllers/users.controller");
 const { verifySession } = require("../middlewares/verifySession.middleware");
 const { cartInfo, cartUpdate } = require("../controllers/cartcontroller");
+const { getProducts } = require("../controllers/products.controller");
 
 const router = express.Router();
+
+// Products
+router.get("/products", getProducts);
 
 router.post("/users/login", login);
 router.post("/users/register", register);

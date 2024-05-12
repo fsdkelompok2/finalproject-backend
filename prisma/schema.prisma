@@ -78,15 +78,25 @@ model Address {
 
 model Cart {
     cart_id                 Int             @id @default(autoincrement())
-    quantity                Int
     
     customer                Customer        @relation(fields: [customer_id], references: [customer_id])
     customer_id             String          @unique
 
-    product_details         Product_Details[]
+    cart_item               Cart_Item[]
     order                   Order[]
 
     @@map("cart")
+}
+
+model Cart_Item {
+    cart_item_id            Int @id @default(autoincrement())
+    quantity                Int
+    
+    cart                    Cart @relation(fields: [cart_id], references: [cart_id])
+    cart_id                 Int
+
+    product_detail          Product_Details @relation(fields: [product_details_id], references: [product_details_id])
+    product_details_id      Int @unique
 }
 
 model Wishlist {
@@ -95,8 +105,7 @@ model Wishlist {
     customer                Customer @relation(fields: [customer_id], references: [customer_id])
     customer_id             String   @unique
 
-    product                 Product @relation(fields: [product_id], references: [product_id])
-    product_id              Int @unique
+    product                 Product []
 
     @@map("wishlist")
 }
@@ -172,8 +181,9 @@ model Product_Details {
     product_size            Product_Size @relation(fields: [product_size_id], references: [product_size_id])
     product_size_id         Int
 
-    cart                    Cart? @relation(fields: [cart_id], references: [cart_id])
-    cart_id                 Int?
+    cart_item               Cart_Item?
+    // cart                    Cart? @relation(fields: [cart_id], references: [cart_id])
+    // cart_id                 Int?
 }
 
 model Product_Color {

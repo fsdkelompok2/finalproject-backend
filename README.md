@@ -5,7 +5,7 @@
 1. Install Dependencies
 
 ```
-npm run install
+npm install
 ```
 
 2. Create .env file
@@ -26,7 +26,7 @@ tR19UUpHEqtGkdGjEqPOtw=="
 3. Apply Migration
 
 ```
-npx prisma migrate reset
+npx prisma migrate dev
 ```
 
 4. Seed data

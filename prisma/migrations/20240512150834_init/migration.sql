@@ -52,7 +52,6 @@ CREATE TABLE `address` (
 -- CreateTable
 CREATE TABLE `cart` (
     `cart_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `quantity` INTEGER NOT NULL,
     `customer_id` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `cart_customer_id_key`(`customer_id`),
@@ -60,13 +59,22 @@ CREATE TABLE `cart` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Cart_Item` (
+    `cart_item_id` INTEGER NOT NULL AUTO_INCREMENT,
+    `quantity` INTEGER NOT NULL,
+    `cart_id` INTEGER NOT NULL,
+    `product_details_id` INTEGER NOT NULL,
+
+    UNIQUE INDEX `Cart_Item_product_details_id_key`(`product_details_id`),
+    PRIMARY KEY (`cart_item_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `wishlist` (
     `wishlist_id` INTEGER NOT NULL AUTO_INCREMENT,
     `customer_id` VARCHAR(191) NOT NULL,
-    `product_id` INTEGER NOT NULL,
 
     UNIQUE INDEX `wishlist_customer_id_key`(`customer_id`),
-    UNIQUE INDEX `wishlist_product_id_key`(`product_id`),
     PRIMARY KEY (`wishlist_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -166,12 +174,12 @@ CREATE TABLE `verification_code` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `_CartToProduct_Details` (
+CREATE TABLE `_ProductToWishlist` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
 
-    UNIQUE INDEX `_CartToProduct_Details_AB_unique`(`A`, `B`),
-    INDEX `_CartToProduct_Details_B_index`(`B`)
+    UNIQUE INDEX `_ProductToWishlist_AB_unique`(`A`, `B`),
+    INDEX `_ProductToWishlist_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -190,10 +198,13 @@ ALTER TABLE `address` ADD CONSTRAINT `address_customer_id_fkey` FOREIGN KEY (`cu
 ALTER TABLE `cart` ADD CONSTRAINT `cart_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Cart_Item` ADD CONSTRAINT `Cart_Item_cart_id_fkey` FOREIGN KEY (`cart_id`) REFERENCES `cart`(`cart_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `product`(`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Cart_Item` ADD CONSTRAINT `Cart_Item_product_details_id_fkey` FOREIGN KEY (`product_details_id`) REFERENCES `Product_Details`(`product_details_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `payment` ADD CONSTRAINT `payment_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -235,7 +246,7 @@ ALTER TABLE `order` ADD CONSTRAINT `order_payment_id_fkey` FOREIGN KEY (`payment
 ALTER TABLE `order` ADD CONSTRAINT `order_cart_id_fkey` FOREIGN KEY (`cart_id`) REFERENCES `cart`(`cart_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_CartToProduct_Details` ADD CONSTRAINT `_CartToProduct_Details_A_fkey` FOREIGN KEY (`A`) REFERENCES `cart`(`cart_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ProductToWishlist` ADD CONSTRAINT `_ProductToWishlist_A_fkey` FOREIGN KEY (`A`) REFERENCES `product`(`product_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `_CartToProduct_Details` ADD CONSTRAINT `_CartToProduct_Details_B_fkey` FOREIGN KEY (`B`) REFERENCES `Product_Details`(`product_details_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `_ProductToWishlist` ADD CONSTRAINT `_ProductToWishlist_B_fkey` FOREIGN KEY (`B`) REFERENCES `wishlist`(`wishlist_id`) ON DELETE CASCADE ON UPDATE CASCADE;

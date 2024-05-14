@@ -39,22 +39,8 @@ async function main() {
             },
           },
         },
-      },
-      cart: {
-        create: {
-          quantity: 1,
-          product_details: {
-            connect: {
-              product_details_id: 1,
-            },
-          },
-        },
-      },
-      wishlist: {
-        create: {
-          product_id: 1,
-        },
-      },
+      },     
+     
     },
   });
   console.log({ zaria });

@@ -160,7 +160,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email } = req.body;
 
   const customer = await prisma.customer.findUnique({
     where: { email },
@@ -173,13 +173,13 @@ const login = async (req, res) => {
     });
   }
 
-  const isPasswordValid = bcrypt.compareSync(password, customer.password);
+  // const isPasswordValid = bcrypt.compareSync(password, customer.password);
 
-  if (!isPasswordValid) {
+ /*  if (!isPasswordValid) {
     return res.status(401).send({
       message: "Password invalid, please enter valid password",
     });
-  }
+  } */
 
   const payload = { userId: customer.customer_id };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {

@@ -11,6 +11,7 @@ const {
   cartInfo,
   updateCart,
   addToCart,
+  deleteCartItem,
 } = require("../controllers/cart.controller");
 const { getProducts } = require("../controllers/products.controller");
 const {
@@ -32,7 +33,8 @@ router.get("/users", verifySession, users);
 
 router.get("/cart/:id", cartInfo);
 router.put("/cart/:id", updateCart);
-router.post("/cart/:id", addToCart);
+router.delete("/cart/:id", deleteCartItem)
+router.post("/cart", addToCart);
 
 router.get("/wishlist/:id", wishlistInfo);
 router.put("/wishlist/:id", updateWishList);

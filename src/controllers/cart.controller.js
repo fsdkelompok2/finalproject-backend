@@ -1,4 +1,5 @@
 const { prisma } = require("../models/prisma");
+const jwt = require("jsonwebtoken");
 
 const cartInfo = async (req, res) => {
   const cart_id = Number(req.params.id);
@@ -18,8 +19,10 @@ const cartInfo = async (req, res) => {
 };
 
 const addToCart = async (req, res) => {
-  const cart_id = Number(req.params.id);
-  const { product_details_id } = req.body;
+
+  const token = req.headers.authorization;
+  const customer_id = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+  const { product_details_id, quantity } = req.body;
 
   if (!product_details_id) {
     return res.status(400).send({
@@ -28,22 +31,51 @@ const addToCart = async (req, res) => {
   }
 
   try {
-    // create cart_item
-    const updateCart = await prisma.cart.update({
-      where: { cart_id },
-      data: {
-        cart_item: {
-          create: {
-            quantity: 1,
-            product_details_id,
+    // check existing cart!
+    const existingCart = await prisma.cart.findFirst({
+      where: {
+        customer_id: customer_id.userId
+      }
+    })
+
+    let updateCart;
+
+    // if cart already exists, update cart_item !
+    if(existingCart) {
+      updateCart = await prisma.cart.update({
+        where: {
+          cart_id: existingCart.cart_id
+        },
+        data: {
+          customer_id: customer_id.userId,
+          cart_item: {
+            create: {
+              quantity,
+              product_details_id,
+            },
           },
         },
-      },
-      include: {
-        cart_item: true,
-      },
-    });
+        include: {
+          cart_item: true,
+        },
+      });
 
+    } else {
+      updateCart = await prisma.cart.create({
+        data: {
+          customer_id: customer_id.userId,
+          cart_item: {
+            create: {
+              quantity,
+              product_details_id,
+            },
+          },
+        },
+        include: {
+          cart_item: true,
+        },
+      });
+    }
     return res.status(200).send({
       message: "Product added to cart!",
       data: {
@@ -51,12 +83,16 @@ const addToCart = async (req, res) => {
       },
     });
   } catch (error) {
-    throw new Error(error);
+    console.error("Failed add product to cart!", error)
+    return res.status(500).send({
+      message: "Failed add product to cart!",
+      error: error.message
+    })
   }
 };
 
 const updateCart = async (req, res) => {
-  const cart_id = Number(req.params.id);
+  const cart_id = req.params.id
   const { cart_item_id, action } = req.body;
 
   if (!action) {
@@ -73,36 +109,18 @@ const updateCart = async (req, res) => {
 
   try {
     switch (action) {
-      case "delete":
-        // delete product from cart
-        const deleteCartItem = await prisma.cart.update({
-          where: { cart_id },
-          data: {
-            cart_item: {
-              delete: {
-                cart_item_id,
-              },
-            },
-          },
-          include: {
-            cart_item: true,
-          },
-        });
-
-        return res.status(200).send({
-          message: "Product deleted from cart!",
-          data: deleteCartItem,
-        });
-
+      
       case "increase":
         // increase product quantity
         const increaseQuantity = await prisma.cart.update({
-          where: { cart_id },
+          where: { 
+            cart_id: Number(cart_id) 
+          },
           data: {
             cart_item: {
               update: {
                 where: {
-                  cart_item_id,
+                  cart_item_id: Number(cart_item_id),
                 },
                 data: {
                   quantity: {
@@ -118,19 +136,21 @@ const updateCart = async (req, res) => {
         });
 
         return res.status(200).send({
-          message: "Product deleted from cart!",
+          message: "Quantity item updated!",
           data: increaseQuantity,
         });
 
       case "decrease":
         // decrease product quantity
         const decreaseQuantity = await prisma.cart.update({
-          where: { cart_id },
+          where: { 
+            cart_id: Number(cart_id)
+          },
           data: {
             cart_item: {
               update: {
                 where: {
-                  cart_item_id,
+                  cart_item_id: Number(cart_item_id),
                 },
                 data: {
                   quantity: {
@@ -146,7 +166,7 @@ const updateCart = async (req, res) => {
         });
 
         return res.status(200).send({
-          message: "Product deleted from cart!",
+          message: "Quantity item updated!",
           data: decreaseQuantity,
         });
 
@@ -154,8 +174,60 @@ const updateCart = async (req, res) => {
         break;
     }
   } catch (error) {
-    throw new Error(error);
+    console.error("Failed updated item in cart!", error)
+    return res.status(500).send({
+      message: "Failed update item in cart",
+      error: error.message
+    });
   }
 };
 
-module.exports = { cartInfo, updateCart, addToCart };
+const deleteCartItem = async (req, res) => {
+  const cart_id = req.params.id;
+  const { cart_item_id } = req.body; 
+
+  try {
+    const deleteItem = await prisma.cart.update({
+      where: {
+        cart_id: Number(cart_id)
+       },
+      data: {
+        cart_item: {
+          delete: {
+            cart_item_id: cart_item_id,
+          },
+        },
+      },
+      include: {
+        cart_item: true,
+      },
+    });
+
+    const cartItem = await prisma.cart.findMany({
+      where: {
+        cart_id: Number(cart_id)
+      },
+      include:{
+        cart_item: true,
+      }
+    });
+
+    return res.status(200).send({
+      message: "Item deleted from cart!",
+      data: cartItem,
+    });
+
+  } catch (err) {
+    return res.status(500).send({
+      message: "Failed delete item!"
+    })
+  }
+  
+
+
+}
+
+      
+
+module.exports = { cartInfo, updateCart, addToCart, deleteCartItem };
+

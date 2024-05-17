@@ -1,4 +1,5 @@
 const { prisma } = require("../models/prisma");
+const ErrorData = require("./ErrorData");
 
 class ProductFilter {
     constructor({ products, queryStr }) {
@@ -23,7 +24,7 @@ class ProductFilter {
       // 3.2. Mencari category_id dari category_name yang disediakan oleh queryString di tabel category
       // Setelah itu membuat properti category dan menghapus properti category_name di object queryStrCopy
       if(queryStrCopy.category_name) {
-        queryStrCopy.category = await prisma.category.findFirst({
+        const categoryName = queryStrCopy.category = await prisma.category.findFirst({
           where: {
             category_name: queryStrCopy.category_name
           },
@@ -32,6 +33,10 @@ class ProductFilter {
           }
         });
 
+        if(!categoryName) {
+          throw new ErrorData(404, "category not found");
+        }
+        
         delete queryStrCopy.category_name;
       }
       

@@ -81,7 +81,7 @@ const updateWishList = async (req, res) => {
         });
 
         return res.status(200).send({
-          message: "Product added to wishlist!",
+          message: "Product removed from wishlist!",
           data: {
             wishlist: removeFromWishlist,
           },

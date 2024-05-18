@@ -38,7 +38,7 @@ router.put("/cart/:id", updateCart);
 router.delete("/cart/:id", deleteCartItem);
 router.post("/cart", addToCart);
 
-router.get("/wishlist/:id", wishlistInfo);
-router.put("/wishlist/:id", updateWishList);
+router.get("/wishlist/:id", verifySession, wishlistInfo);
+router.put("/wishlist/:id", verifySession, updateWishList);
 
 module.exports = router;

@@ -42,7 +42,7 @@ const sendVerificationCode = async (req, res) => {
   if (isEmailUsed) {
     return res.status(409).send({
       message:
-        "Email is already used, please used different email or login with this email.",
+        "Email is already used, please use different email or login with this email.",
     });
   }
 
@@ -93,6 +93,54 @@ const sendVerificationCode = async (req, res) => {
   });
 };
 
+const updateUser = async (req, res) => {
+  const data = req.body;
+
+  // Check is email already used
+  if (data.email) {
+    const isEmailUsed = await prisma.customer.findUnique({
+      where: { email: data.email },
+    });
+
+    if (isEmailUsed)
+      return res.status(409).send({
+        message:
+          "Email is already used, please use different email or login with this email.",
+      });
+  }
+
+  // Update User data on database
+  let updateUser;
+
+  if (data.password) {
+    // Hash password
+    const hashPassword = bcrypt.hashSync(data.password, 8);
+
+    updateUser = await prisma.customer.update({
+      where: { customer_id: data.customer_id },
+      data: {
+        ...data,
+        password: hashPassword,
+      },
+    });
+  } else
+    updateUser = await prisma.customer.update({
+      where: { customer_id: data.customer_id },
+      data,
+    });
+
+  if (!updateUser)
+    return res.status(500).json({
+      message: `Update user with id ${updateUser.customer_id} failed. Try check required fields or try again later.`,
+      data: updateUser,
+    });
+
+  return res.status(200).json({
+    message: `Update user with id ${updateUser.customer_id} success`,
+    data: updateUser,
+  });
+};
+
 const register = async (req, res) => {
   const { code, password, first_name, last_name, shopping_preference, birth } =
     req.body;
@@ -135,7 +183,7 @@ const register = async (req, res) => {
     expiresIn: "30 days",
   });
 
-  // Delete Verifivation Code
+  // Delete Used Verification Code
   const deleteCode = await prisma.verification_Code.delete({
     where: {
       value: verification.value,
@@ -192,9 +240,26 @@ const login = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  try {
+    await res.clearCookie("session");
+
+    return res.status(200).json({
+      message: "logout Success",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "logout Failed, try again later.",
+    });
+  }
+};
+
 module.exports = {
   login,
+  logout,
   register,
+  updateUser,
   users,
   sendVerificationCode,
 };

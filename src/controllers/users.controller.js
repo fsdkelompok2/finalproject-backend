@@ -35,6 +35,17 @@ const sendVerificationCode = async (req, res) => {
     });
   }
 
+  const isEmailUsed = await prisma.customer.findUnique({
+    where: { email },
+  });
+
+  if (isEmailUsed) {
+    return res.status(409).send({
+      message:
+        "Email is already used, please used different email or login with this email.",
+    });
+  }
+
   const code = generateCode();
   const mailDetails = {
     from: "madeline.haley40@ethereal.email",
@@ -63,6 +74,7 @@ const sendVerificationCode = async (req, res) => {
       const storeCode = await prisma.verification_Code.create({
         data: {
           value: code,
+          email,
         },
       });
 
@@ -75,57 +87,29 @@ const sendVerificationCode = async (req, res) => {
 
       return res.status(200).json({
         message: `Send verification code success, check inbox of ${email}`,
-        email,
         code,
       });
     }
   });
 };
 
-const verifyEmailCode = async (req, res) => {
-  const { code } = req.body;
-  const isCodeValid = await prisma.verification_Code.findUnique({
+const register = async (req, res) => {
+  const { code, password, first_name, last_name, shopping_preference, birth } =
+    req.body;
+
+  // Verify Code
+  const verification = await prisma.verification_Code.findUnique({
     where: { value: Number(code) },
   });
 
-  if (!isCodeValid) {
+  if (!verification) {
     return res.status(400).send({
       message: "Code invalid, please check your email to get verification code",
     });
   }
 
-  const deleteCode = await prisma.verification_Code.delete({
-    where: {
-      value: isCodeValid.value,
-    },
-  });
-
-  if (!deleteCode) {
-    return res.status(500).send({
-      message: "Something Error on the server, please try again later.",
-    });
-  }
-
-  return res.status(200).send({
-    message: "Code valid, redirect to the next registration form.",
-  });
-};
-
-const register = async (req, res) => {
-  const { email, password, first_name, last_name, shopping_preference, birth } =
-    req.body;
-
-  const isEmailUsed = await prisma.customer.findUnique({
-    where: { email },
-  });
-
-  if (isEmailUsed) {
-    return res.status(409).send({
-      message:
-        "Email is already used, please used different email or login with this email.",
-    });
-  }
-
+  // Register Customer
+  const email = verification.email;
   const hashPassword = bcrypt.hashSync(password, 8);
 
   const customer = await prisma.customer.create({
@@ -145,10 +129,24 @@ const register = async (req, res) => {
     });
   }
 
+  // Sign JWT TOKEN
   const payload = { userId: customer.customer_id };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "30 days",
   });
+
+  // Delete Verifivation Code
+  const deleteCode = await prisma.verification_Code.delete({
+    where: {
+      value: verification.value,
+    },
+  });
+
+  if (!deleteCode) {
+    return res.status(500).send({
+      message: "Something Error on the server, please try again later.",
+    });
+  }
 
   return res.cookie("session", token).status(200).json({
     message: "Register success",
@@ -160,7 +158,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   const customer = await prisma.customer.findUnique({
     where: { email },
@@ -173,13 +171,13 @@ const login = async (req, res) => {
     });
   }
 
-  // const isPasswordValid = bcrypt.compareSync(password, customer.password);
+  const isPasswordValid = bcrypt.compareSync(password, customer.password);
 
- /*  if (!isPasswordValid) {
+  if (!isPasswordValid) {
     return res.status(401).send({
       message: "Password invalid, please enter valid password",
     });
-  } */
+  }
 
   const payload = { userId: customer.customer_id };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -188,7 +186,9 @@ const login = async (req, res) => {
 
   return res.cookie("session", token).status(200).json({
     message: "Login Success",
-    data: token,
+    data: {
+      token,
+    },
   });
 };
 
@@ -196,6 +196,5 @@ module.exports = {
   login,
   register,
   users,
-  verifyEmailCode,
   sendVerificationCode,
 };

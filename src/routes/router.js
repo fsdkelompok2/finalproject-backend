@@ -3,7 +3,6 @@ const {
   login,
   register,
   users,
-  verifyEmailCode,
   sendVerificationCode,
 } = require("../controllers/users.controller");
 const { verifySession } = require("../middlewares/verifySession.middleware");
@@ -27,13 +26,12 @@ router.get("/products", getProducts);
 router.post("/users/login", login);
 router.post("/users/register", register);
 router.post("/users/sendVerificationCode", sendVerificationCode);
-router.post("/users/verifyEmailCode", verifyEmailCode);
 
 router.get("/users", verifySession, users);
 
 router.get("/cart/:id", cartInfo);
 router.put("/cart/:id", updateCart);
-router.delete("/cart/:id", deleteCartItem)
+router.delete("/cart/:id", deleteCartItem);
 router.post("/cart", addToCart);
 
 router.get("/wishlist/:id", wishlistInfo);

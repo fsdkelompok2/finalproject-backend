@@ -233,8 +233,9 @@ model Order {
 }
 
 model Verification_Code {
-    id         Int  @id @default(autoincrement())
-    value      Int  @unique
+    id         Int      @id @default(autoincrement())
+    value      Int      @unique
+    email      String
 
     @@map("verification_code")
 }

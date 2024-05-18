@@ -168,6 +168,7 @@ CREATE TABLE `order` (
 CREATE TABLE `verification_code` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `value` INTEGER NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `verification_code_value_key`(`value`),
     PRIMARY KEY (`id`)

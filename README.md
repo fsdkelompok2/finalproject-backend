@@ -25,8 +25,9 @@ tR19UUpHEqtGkdGjEqPOtw=="
 
 3. Apply Migration
 
-```
 Reseting database && apply new migration:
+
+```
 npx prisma migrate reset
 
 ```

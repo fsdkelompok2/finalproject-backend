@@ -11,11 +11,12 @@
     "doc": "node doc/index.js",
     "test": "jest",
     "generate:doc": "node src/lib/swagger/swagger.js"
+    
   },
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^5.13.0",
+    "@prisma/client": "^5.14.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -30,6 +31,6 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",
     "nodemon": "^3.1.0",
-    "prisma": "^5.13.0"
+    "prisma": "^5.14.0"
   }
 }

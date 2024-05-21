@@ -129,24 +129,27 @@ model Product {
     product_name            String      @db.VarChar(255)
     product_description     String      @db.Text
     product_price           String
-    shopping_preference     ShoppingPreference
+    product_thumb           String      
+    sex_cat                 String      @db.VarChar(255)             
+    createAt                DateTime    @default(now())
 
     wishlist                Wishlist[]
     
-    category                Category    @relation(fields: [category_id], references: [category_id])
-    category_id             Int
+    category                Category    @relation(fields: [category_name], references: [category_name])
+    category_name           String      
 
     product_image           Product_Image[]
     product_color           Product_Color[]
     product_size            Product_Size[]
     product_details         Product_Details[]
+                    
 
     @@map("product")
 }
 
 model Category {
-    category_id             Int     @id @default(autoincrement())
-    category_name           String  @db.VarChar(255)
+    category_name           String  @id @unique  
+    category_desc           String  @db.VarChar(255)
 
     product                 Product[]
 
@@ -170,7 +173,7 @@ model Product_Image {
 
 model Product_Details {
     product_details_id      Int     @id @default(autoincrement())
-    product_stock           Int                   
+    product_stock           Int                     
     
     product                 Product @relation(fields: [product_id], references: [product_id])
     product_id              Int

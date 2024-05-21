@@ -33,6 +33,7 @@ const getProducts = async (req, res, next) => {
     }
 }
 
+
 module.exports  = {
     getProducts
 }

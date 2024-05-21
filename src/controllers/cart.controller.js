@@ -26,7 +26,7 @@ const addToCart = async (req, res) => {
 
   if (!product_details_id) {
     return res.status(400).send({
-      message: "Error: field product_details_id invalid",
+      message: "Product has been selected yet!", 
     });
   }
 
@@ -82,11 +82,11 @@ const addToCart = async (req, res) => {
         cart: updateCart,
       },
     });
-  } catch (error) {
-    console.error("Failed add product to cart!", error)
+  } catch (err) {
+    console.error("Failed add product to cart!", err)
     return res.status(500).send({
       message: "Failed add product to cart!",
-      error: error.message
+      error: err.message
     })
   }
 };
@@ -108,8 +108,7 @@ const updateCart = async (req, res) => {
   }
 
   try {
-    switch (action) {
-      
+    switch (action) {      
       case "increase":
         // increase product quantity
         const increaseQuantity = await prisma.cart.update({
@@ -215,6 +214,7 @@ const deleteCartItem = async (req, res) => {
     return res.status(200).send({
       message: "Item deleted from cart!",
       data: cartItem,
+
     });
 
   } catch (err) {
@@ -222,12 +222,15 @@ const deleteCartItem = async (req, res) => {
       message: "Failed delete item!"
     })
   }
-  
-
 
 }
 
       
 
-module.exports = { cartInfo, updateCart, addToCart, deleteCartItem };
+module.exports = { 
+  cartInfo, 
+  updateCart, 
+  addToCart, 
+  deleteCartItem, 
+};
 

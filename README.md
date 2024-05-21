@@ -41,12 +41,9 @@ npx prisma migrate reset
     4. cek kembali tiap field, dengan data baru yang dibutuhkan
     5. seed!
 
-```
-
 seed data product:
 
 ```
-
 node prisma/seed/seed.js
 
 ```
@@ -54,7 +51,6 @@ node prisma/seed/seed.js
 seed data users:
 
 ```
-
 node prisma/seed/users.js
 
 ```
@@ -62,10 +58,13 @@ node prisma/seed/users.js
 5. Cek apakah data seed sudah ada di database dengan prisma studio
 
 ```
-
 npx prisma studio
 
 ```
+
 6. Happy develop guys!!
+
+```
+
 
 ```

@@ -367,14 +367,14 @@ const products = [
         },
     },
     {
-        product_name: "Nike Court Vision Low Next Nature",
-        product_description: `The Court Vision Low blends the fast-break style of '80s basketball with the fast-paced culture of today's game. It features a synthetic leather upper inspired by old-school sneakers and the classic rubber cupsole featured on some of the most iconic silhouettes of the past.`,
-        product_price: "1199000",
-        product_thumb: "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/29a58cdc-d85a-4f01-a226-ede927c8c881/court-vision-low-next-nature-shoes-D5BmqX.png",
+        product_name: "Nike AL8",
+        product_description: `The AL8 is the perfect mix of nostalgia (peep the embroidered Swoosh) and the modern comfort you love. The plush upper combines breathable mesh and a chunky silhouette for a sporty look that's easy to style. Plus, a flexible Waffle sole references retro running shoes while providing the traction you need to go all day. Inspired by the '90s. Ready for the future.`,
+        product_price: "1399000",
+        product_thumb: "https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/8970dbd6-7e85-48a4-82b8-7bdc10e46da3/al8-shoes-Xs723b.png",
         sex_cat: "women",
         category: {
           connect: {
-            category_name: "Tennis"
+            category_name: "Lifestyle"
           },
         },
         product_color: {
@@ -430,49 +430,49 @@ const products = [
             data: [
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/74ad7fbb-1d56-478e-bde5-1fbc056873fe/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/109438b9-17ec-40eb-8893-f99690ac3ca7/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 1,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/058f407d-f781-407f-9e41-7e3441473dfb/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/d07a96e0-ee07-4590-a552-2144e484e85d/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 1,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/79638668-3370-4f52-9810-aa4f2d410f28/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/039ae0c0-c7bc-44e8-aa77-41827bffaa42/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 1,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/a9a21a07-89db-4542-bc59-6f678d96c71d/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/cf8e8fa2-7005-47e4-80a5-df7813e976cf/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 1,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/1385ce3e-1a5e-470b-bfef-b5bea2210141/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/79f0f812-789a-4dd3-984b-65cb2ab48e77/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 2,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/ba92ef86-e27c-4d10-9395-8c1541b8d03d/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/dcb6620c-62f5-4472-a0e0-c164df18f853/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 2,
               },
               {
                 image_url:
-                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/29a58cdc-d85a-4f01-a226-ede927c8c881/court-vision-low-next-nature-shoes-D5BmqX.png",
+                  "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/4b953e47-7a8b-4ee7-b291-98a5d2b0c34b/al8-shoes-Xs723b.png",
                 image_width: 1729,
                 image_height: 2160,
                 product_color_id: 2,

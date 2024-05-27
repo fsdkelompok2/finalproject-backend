@@ -29,7 +29,6 @@ router.get("/products", getProducts);
 router.post("/users/login", login);
 router.post("/users/register", register);
 router.post("/users/sendVerificationCode", sendVerificationCode);
-router.post("/users/verifyEmailCode", verifyEmailCode);
 router.get("/users", verifySession, users);
 
 // Cart

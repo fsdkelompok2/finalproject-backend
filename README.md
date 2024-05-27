@@ -23,12 +23,11 @@ JWT_SECRET="o/7/Qy9YvHrd3kVb+HBXjrq0J3tZ8TttJ9zJHSa8NDJjnbxjzJFT1SP3Kg++46Ud
 tR19UUpHEqtGkdGjEqPOtw=="
 ```
 
-3. Apply Migration
-
-Reseting database && apply new migration:
+3. Sync Database
 
 ```
-npx prisma migrate reset
+npx prisma generate
+npx prisma db push
 
 ```
 

@@ -20,7 +20,6 @@ model Customer {
     address               Address[]
     cart                  Cart[]
     wishlist              Wishlist[]
-    payment               Payment[]
     order                 Order[]
 
     @@map("customer")
@@ -33,7 +32,7 @@ enum ShoppingPreference {
 
 model Shipment {
     shipment_id         Int      @id @default(autoincrement())
-    shipment_date       DateTime
+    shipment_date       DateTime @default(now())
     
     customer            Customer @relation(fields: [customer_id], references: [customer_id])
     customer_id         String
@@ -108,20 +107,6 @@ model Wishlist {
     product                 Product []
 
     @@map("wishlist")
-}
-
-model Payment {
-    payment_id              Int         @id @default(autoincrement())
-    payment_date            DateTime
-    payment_method          String      @db.VarChar(100)
-    amount                  String
-    
-    customer                Customer @relation(fields: [customer_id], references: [customer_id])
-    customer_id             String   @unique
-
-    order                   Order[]
-
-    @@map("payment")
 }
 
 model Product {
@@ -217,7 +202,7 @@ model Product_Size {
 
 model Order {
     order_id                Int       @id @default(autoincrement())
-    order_date              DateTime
+    order_date              DateTime @default(now())
     total_price             String
     
     customer                Customer @relation(fields: [customer_id], references: [customer_id])
@@ -225,9 +210,6 @@ model Order {
 
     shipment                Shipment @relation(fields: [shipment_id], references: [shipment_id])
     shipment_id             Int
-
-    payment                 Payment  @relation(fields: [payment_id], references: [payment_id])
-    payment_id              Int
 
     cart                    Cart     @relation(fields: [cart_id], references: [cart_id])
     cart_id                 Int

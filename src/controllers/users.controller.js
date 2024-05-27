@@ -12,6 +12,51 @@ const users = async (req, res) => {
     where: {
       customer_id: session.userId,
     },
+    include: {
+      cart: {
+        include: {
+          cart_item: {
+            include: {
+              product_detail: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      wishlist: {
+        include: {
+          product: true,
+        },
+      },
+      address: true,
+      shipment: {
+        include: {
+          ship_provider: true,
+        },
+      },
+      order: {
+        include: {
+          customer: {
+            include: {
+              address: true,
+            },
+          },
+          cart: {
+            include: {
+              cart_item: true,
+            },
+          },
+          shipment: {
+            include: {
+              ship_provider: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!customer) {
@@ -95,19 +140,8 @@ const sendVerificationCode = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const data = req.body;
-
-  // Check is email already used
-  if (data.email) {
-    const isEmailUsed = await prisma.customer.findUnique({
-      where: { email: data.email },
-    });
-
-    if (isEmailUsed)
-      return res.status(409).send({
-        message:
-          "Email is already used, please use different email or login with this email.",
-      });
-  }
+  const token = req.headers.authorization;
+  const customer_id = jwt.verify(token, process.env.JWT_SECRET);
 
   // Update User data on database
   let updateUser;
@@ -117,7 +151,7 @@ const updateUser = async (req, res) => {
     const hashPassword = bcrypt.hashSync(data.password, 8);
 
     updateUser = await prisma.customer.update({
-      where: { customer_id: data.customer_id },
+      where: { customer_id: customer_id.userId },
       data: {
         ...data,
         password: hashPassword,
@@ -125,7 +159,7 @@ const updateUser = async (req, res) => {
     });
   } else
     updateUser = await prisma.customer.update({
-      where: { customer_id: data.customer_id },
+      where: { customer_id: customer_id.userId },
       data,
     });
 

@@ -1,21 +1,46 @@
 const { prisma } = require("../models/prisma");
+const jwt = require("jsonwebtoken");
 
 const wishlistInfo = async (req, res) => {
-  const wishlist_id = Number(req.params.id);
+  const token = req.headers.authorization;
+  const customer_id = jwt.verify(token, process.env.JWT_SECRET);
 
-  const listing = await prisma.wishlist.findMany({
+  const existingWishlist = await prisma.wishlist.findUnique({
     where: {
-      wishlist_id,
+      customer_id: customer_id.userId,
     },
     include: {
       product: true,
     },
   });
 
-  return res.status(200).send({
-    message: "Cart info retrieved!",
-    data: listing,
-  });
+  if (existingWishlist) {
+    return res.status(200).send({
+      message: "Wishlist info retrieved!",
+      data: existingWishlist,
+    });
+  }
+
+  try {
+    const createWishlist = await prisma.wishlist.create({
+      data: {
+        customer_id: customer_id.userId,
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    return res.status(200).send({
+      message: "Wishlist info retrieved!",
+      data: createWishlist,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      message: "Error: failed to create wishlish info",
+    });
+  }
 };
 
 const updateWishList = async (req, res) => {

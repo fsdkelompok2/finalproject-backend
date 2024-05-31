@@ -12,8 +12,13 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors());
 app.use(express.json());
+const corsOptions = {
+  origin: process.env.FRONTEND_BASE_URL,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Routes
 app.use("/", router);

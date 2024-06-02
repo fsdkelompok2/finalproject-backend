@@ -43,6 +43,7 @@ router.post("/users/login", login);
 router.post("/users/register", register);
 router.post("/users/sendVerificationCode", sendVerificationCode);
 router.post("/users/logout", verifySession, logout);
+router.post("/users/verifyEmailCode");
 router.get("/users", verifySession, users);
 router.put("/users", verifySession, updateUser);
 

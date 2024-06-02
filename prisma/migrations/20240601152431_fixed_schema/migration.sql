@@ -96,20 +96,21 @@ CREATE TABLE `product` (
     `product_name` VARCHAR(255) NOT NULL,
     `product_description` TEXT NOT NULL,
     `product_price` VARCHAR(191) NOT NULL,
-    `shopping_preference` ENUM('men', 'woman') NOT NULL,
+    `product_thumb` VARCHAR(191) NOT NULL,
+    `sex_cat` VARCHAR(255) NOT NULL,
     `createAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `category_id` INTEGER NOT NULL,
+    `category_name` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`product_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `category` (
-    `category_id` INTEGER NOT NULL AUTO_INCREMENT,
-    `category_name` VARCHAR(255) NOT NULL,
+    `category_name` VARCHAR(191) NOT NULL,
     `category_desc` VARCHAR(255) NOT NULL,
 
-    PRIMARY KEY (`category_id`)
+    UNIQUE INDEX `category_category_name_key`(`category_name`),
+    PRIMARY KEY (`category_name`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -170,6 +171,7 @@ CREATE TABLE `order` (
 CREATE TABLE `verification_code` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `value` INTEGER NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
 
     UNIQUE INDEX `verification_code_value_key`(`value`),
     PRIMARY KEY (`id`)
@@ -212,7 +214,7 @@ ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_customer_id_fkey` FOREIGN KEY (`
 ALTER TABLE `payment` ADD CONSTRAINT `payment_customer_id_fkey` FOREIGN KEY (`customer_id`) REFERENCES `customer`(`customer_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `product` ADD CONSTRAINT `product_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `category`(`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `product` ADD CONSTRAINT `product_category_name_fkey` FOREIGN KEY (`category_name`) REFERENCES `category`(`category_name`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `product_image` ADD CONSTRAINT `product_image_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `product`(`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

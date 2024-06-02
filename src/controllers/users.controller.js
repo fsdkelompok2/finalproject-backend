@@ -211,6 +211,17 @@ const register = async (req, res) => {
     });
   }
 
+  // Define Customer Cart
+  const customerCart = await prisma.cart.create({
+    data: {
+      customer: {
+        connect: {
+          customer_id: customer.customer_id,
+        },
+      },
+    },
+  });
+
   // Sign JWT TOKEN
   const payload = { userId: customer.customer_id };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
@@ -235,6 +246,7 @@ const register = async (req, res) => {
     data: {
       token,
       customer,
+      customerCart,
     },
   });
 };
@@ -249,7 +261,7 @@ const login = async (req, res) => {
   if (!customer) {
     return res.status(401).send({
       message:
-        "Email invalid, please enter valid email or sign up with this email firts.",
+        "Email invalid, please enter valid email or sign up with this email first.",
     });
   }
 

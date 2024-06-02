@@ -79,7 +79,7 @@ model Cart {
     cart_id                 Int             @id @default(autoincrement())
     
     customer                Customer        @relation(fields: [customer_id], references: [customer_id])
-    customer_id             String          @unique
+    customer_id             String          @map("customer_id")
 
     cart_item               Cart_Item[]
     order                   Order[]
@@ -220,7 +220,7 @@ model Order {
 model Verification_Code {
     id         Int      @id @default(autoincrement())
     value      Int      @unique
-    email      String
+    email      String   @db.VarChar(255)
 
     @@map("verification_code")
 }

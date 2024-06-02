@@ -3,18 +3,43 @@ const jwt = require("jsonwebtoken");
 
 const cartInfo = async (req, res) => {
   const cart_id = Number(req.params.id);
-  const listing = await prisma.cart.findMany({
+  const cartItems = await prisma.cart.findMany({
     where: {
       cart_id,
     },
     include: {
-      cart_item: true,
+      cart_item: {
+        include: {
+          product_detail: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      },
     },
   });
 
+  // Item details
+  const itemDetails = cartItems.map((cartItems) => ({
+    cart_id: cartItems.cart_id,
+    items: cartItems.cart_item.map((item) => ({
+      cart_item_id: item.cart_item_id,
+      quantity: item.quantity,
+      product: {
+        productName: item.product_detail.product.product_name,
+        productSex: item.product_detail.product.sex_cat,
+        productDesc: item.product_detail.product.product_description,
+        productCat: item.product_detail.product.category_name,
+        productPrice: item.product_detail.product.product_price,
+        productThumb: item.product_detail.product.product_thumb,
+      },
+    })),
+  }));
+
   return res.status(200).send({
     message: "Cart info retrieved!",
-    data: listing,
+    data: itemDetails,
   });
 };
 
@@ -31,53 +56,46 @@ const addToCart = async (req, res) => {
 
   try {
     // check existing cart!
-    const existingCart = await prisma.cart.findFirst({
+    let existingCart = await prisma.cart.findFirst({
       where: {
         customer_id: customer_id.userId,
       },
     });
 
-    let updateCart;
-
-    // if cart already exists, update cart_item !
-    if (existingCart) {
-      updateCart = await prisma.cart.update({
-        where: {
-          cart_id: existingCart.cart_id,
-        },
+    if (!existingCart) {
+      existingCart = await prisma.cart.create({
         data: {
-          customer_id: customer_id.userId,
-          cart_item: {
-            create: {
-              quantity,
-              product_details_id,
-            },
-          },
-        },
-        include: {
-          cart_item: true,
-        },
-      });
-    } else {
-      updateCart = await prisma.cart.create({
-        data: {
-          customer_id: customer_id.userId,
-          cart_item: {
-            create: {
-              quantity,
-              product_details_id,
-            },
-          },
-        },
-        include: {
-          cart_item: true,
+          customer_id: customer_id,
         },
       });
     }
+    // if cart already exists, update cart_item !
+    const existingCartItem = await prisma.cart_Item.findFirst({
+      where: {
+        cart_id: existingCart.cart_id,
+        product_details_id: product_details_id,
+      },
+    });
+
+    // Check items in cart!
+    if (existingCartItem) {
+      return res.status(400).send({
+        message: "Product already in your cart!",
+      });
+    }
+
+    // Add item in cart!
+    const addItem = await prisma.cart_Item.create({
+      data: {
+        cart_id: existingCart.cart_id,
+        product_details_id: product_details_id,
+        quantity: quantity,
+      },
+    });
     return res.status(200).send({
       message: "Product added to cart!",
       data: {
-        cart: updateCart,
+        cart: addItem,
       },
     });
   } catch (err) {
